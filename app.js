@@ -521,22 +521,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 14.5 Selector de Tema Visual (Gaming, Simple y Clara, Canelones, Oscuro)
+  // 14.5 Selector de Tema Visual: siempre enciende por defecto en Estética Simple y Clara
   function initTheme() {
-    let savedTheme = localStorage.getItem('construyamos_costa_theme') || 'gaming';
-    if (savedTheme === 'formal') savedTheme = 'clean';
-    document.body.setAttribute('data-theme', savedTheme);
+    const defaultTheme = 'clean';
+    document.body.setAttribute('data-theme', defaultTheme);
     const selectTheme = document.getElementById('selectTheme');
     if (selectTheme) {
-      selectTheme.value = savedTheme;
+      selectTheme.value = defaultTheme;
       selectTheme.addEventListener('change', (e) => {
         const theme = e.target.value;
         document.body.setAttribute('data-theme', theme);
-        localStorage.setItem('construyamos_costa_theme', theme);
         playPopSound(660, 0.06);
         const themeNames = {
-          gaming: 'Gaming (Lúdico) 🎮',
           clean: 'Estética Simple y Clara ✨',
+          gaming: 'Gaming (Lúdico) 🎮',
           canelones: 'Institucional Canelones 🌿',
           dark: 'Modo Oscuro 🌙'
         };
