@@ -186,8 +186,16 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', () => {
         placingMarkerType = m.type;
         playPopSound(500, 0.06);
-        showToast(`Hacé clic en la playa o calle para colocar "${m.titulo}"`, '🎯');
+        const msg = (window.innerWidth <= 768) ?
+          `Tocá en la playa o calle para colocar "${m.titulo}"` :
+          `Hacé clic en la playa o calle para colocar "${m.titulo}"`;
+        showToast(msg, '🎯');
         document.getElementById('map').style.cursor = 'crosshair';
+
+        // En pantallas móviles, colapsar suavemente el inventario para dejar ver todo el mapa
+        if (window.innerWidth <= 768) {
+          collapseDockMobile();
+        }
       });
 
       grid.appendChild(card);
@@ -607,10 +615,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2800);
   }
 
+  // 16. Control de Cajón Desplegable en Móviles (Bottom Drawer Sheet)
+  function collapseDockMobile() {
+    const dock = document.getElementById('gameDock');
+    const btn = document.getElementById('btnToggleDockMobile');
+    if (dock) dock.classList.remove('dock-expanded');
+    if (btn) btn.textContent = '▲ Fichas';
+  }
+
+  function expandDockMobile() {
+    const dock = document.getElementById('gameDock');
+    const btn = document.getElementById('btnToggleDockMobile');
+    if (dock) dock.classList.add('dock-expanded');
+    if (btn) btn.textContent = '▼ Ocultar';
+    playPopSound(500, 0.05);
+  }
+
+  function setupMobileDock() {
+    const btn = document.getElementById('btnToggleDockMobile');
+    const handle = document.getElementById('dockMobileHandle');
+    const dock = document.getElementById('gameDock');
+
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (dock && dock.classList.contains('dock-expanded')) {
+          collapseDockMobile();
+        } else {
+          expandDockMobile();
+        }
+      });
+    }
+
+    if (handle) {
+      handle.addEventListener('click', () => {
+        if (dock && dock.classList.contains('dock-expanded')) {
+          collapseDockMobile();
+        } else {
+          expandDockMobile();
+        }
+      });
+    }
+  }
+
+  // 17. Pantalla de Bienvenida con Instructivo de Uso Rápido
+  function setupWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    const btnStart = document.getElementById('btnStartBuilding');
+    const btnClose = document.getElementById('btnCloseHelp');
+    const btnHelp = document.getElementById('btnOpenHelp');
+
+    function openModal() {
+      if (modal) modal.classList.add('show');
+      playPopSound(560, 0.06);
+    }
+
+    function closeModal() {
+      if (modal) modal.classList.remove('show');
+      playPopSound(720, 0.08);
+      try {
+        localStorage.setItem('construyamos_costa_welcome_seen', 'true');
+      } catch (e) {}
+    }
+
+    if (btnStart) btnStart.addEventListener('click', closeModal);
+    if (btnClose) btnClose.addEventListener('click', closeModal);
+    if (btnHelp) btnHelp.addEventListener('click', openModal);
+
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    // Mostrar automáticamente en la primera visita
+    try {
+      const hasSeen = localStorage.getItem('construyamos_costa_welcome_seen');
+      if (!hasSeen) {
+        setTimeout(openModal, 450);
+      }
+    } catch (e) {}
+  }
+
   // Inicialización
   initTheme();
   initMap();
   renderDockInventory();
   renderBalneariosBar();
   renderPlacedList();
+  setupMobileDock();
+  setupWelcomeModal();
 });

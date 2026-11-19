@@ -62,6 +62,11 @@
         🔊
       </button>
 
+      <!-- Botón de Ayuda / Instructivo -->
+      <button id="btnOpenHelp" class="game-btn game-btn-help" title="Ver instructivo y guía rápida de uso">
+        ❓ Instructivo
+      </button>
+
       <!-- Botón Vaciar Mapa -->
       <button id="btnClearMap" class="game-btn game-btn-danger" title="Vaciar todos los elementos del mapa">
         🗑️ Vaciar
@@ -77,12 +82,20 @@
       
       <!-- Dock Header: Title & Counter -->
       <div class="dock-header">
+        <!-- Mobile Drag Handle -->
+        <div class="dock-mobile-handle" id="dockMobileHandle">
+          <div class="dock-handle-bar"></div>
+        </div>
+
         <div class="dock-title-row">
           <div class="dock-title">
             <span>📦</span> Caja de Construcción
           </div>
-          <div class="dock-counter">
-            <span id="placedCountBadge">0</span> colocados
+          <div class="dock-header-right">
+            <span id="placedCountBadge" class="dock-counter">0 colocados</span>
+            <button id="btnToggleDockMobile" class="dock-mobile-toggle-btn" title="Desplegar o cerrar inventario">
+              ▲ Fichas
+            </button>
           </div>
         </div>
 
@@ -150,6 +163,51 @@
   <div class="toast-notice" id="toastNotice">
     <span id="toastIcon">✨</span>
     <span id="toastText">¡Elemento colocado en el mapa!</span>
+  </div>
+
+  <!-- Pantalla de Bienvenida con Instructivo de Uso -->
+  <div class="welcome-modal-backdrop" id="welcomeModal">
+    <div class="welcome-modal-card">
+      <div class="welcome-card-header">
+        <span class="welcome-badge">🏖️ Canelones entre arroyos</span>
+        <button id="btnCloseHelp" class="welcome-close-btn" title="Cerrar instructivo">✕</button>
+      </div>
+      <h2>¡Construyamos la Costa!</h2>
+      <p class="welcome-subtitle">Plataforma interactiva para planificar y construir el mapa de usos costeros de forma lúdica y colaborativa.</p>
+      
+      <div class="welcome-steps-grid">
+        <div class="welcome-step-item">
+          <div class="welcome-step-icon">📦</div>
+          <div class="welcome-step-content">
+            <h4>1. Elegí una ficha</h4>
+            <p>Explorá paradores, canchas deportivas, puestos de guardavidas, bajadas accesibles, náutica o señalización en la caja de construcción.</p>
+          </div>
+        </div>
+
+        <div class="welcome-step-item">
+          <div class="welcome-step-icon">🖐️</div>
+          <div class="welcome-step-content">
+            <h4>2. Ubicala en el mapa</h4>
+            <p><strong>En Computadora:</strong> Arrastrá y soltá sobre la playa o calle.<br>
+               <strong>En Celular o Tablet:</strong> Tocá la ficha y luego tocá el punto del mapa donde quieras colocarla.</p>
+          </div>
+        </div>
+
+        <div class="welcome-step-item">
+          <div class="welcome-step-icon">🎯</div>
+          <div class="welcome-step-content">
+            <h4>3. Ajustá y personalizá</h4>
+            <p>Tocá cualquier ícono colocado para cambiar su tamaño con <strong>[+]</strong> o <strong>[-]</strong>, moverlo o elegir diferentes fondos temáticos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="welcome-modal-actions">
+        <button id="btnStartBuilding" class="welcome-start-btn">
+          🚀 ¡Comenzar a Construir!
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Scripts -->
