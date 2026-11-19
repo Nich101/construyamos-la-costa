@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construyamos la Costa | Canelones entre arroyos</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Google Fonts: Fredoka, Montserrat & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Custom Gaming Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="gaming">
+
+  <!-- Game Header Bar -->
+  <header class="game-header">
+    <div class="game-logo">
+      <div class="game-logo-icon">🏖️</div>
+      <div class="game-logo-text">
+        <h1>Construyamos la Costa</h1>
+        <p>Canelones entre arroyos</p>
+      </div>
+    </div>
+
+    <div class="game-header-tools">
+      <!-- Selector de Tema Visual (Gaming, Simple y Clara, Canelones, Oscuro) -->
+      <div class="basemap-selector-wrap theme-selector-wrap" title="Cambiar tema visual de la interfaz">
+        <label for="selectTheme" class="basemap-label">🎨 Tema:</label>
+        <select id="selectTheme" class="game-select">
+          <option value="gaming" selected>🎮 Gaming (Lúdico)</option>
+          <option value="clean">✨ Estética Simple y Clara</option>
+          <option value="canelones">🌿 Institucional Canelones</option>
+          <option value="dark">🌙 Modo Oscuro</option>
+        </select>
+      </div>
+
+      <!-- Selector de Estilos de Fondo de Mapa (Inspirado en MapHub / Gamer) -->
+      <div class="basemap-selector-wrap" title="Elegí la temática y estilo del mapa base">
+        <label for="selectBasemap" class="basemap-label">🗺️ Fondo:</label>
+        <select id="selectBasemap" class="game-select">
+          <option value="illustrated" selected>🎨 Cómic Costero (Ilustrado)</option>
+          <option value="callejero_antiguo">🏛️ Callejero de Época (Plano Retro)</option>
+          <option value="pirate">🏴‍☠️ Mapa Pirata del Tesoro</option>
+          <option value="satellite">🛰️ Satélite Real (Esri / Earth)</option>
+          <option value="topo">🧭 Topográfico & Relieve (Esri)</option>
+        </select>
+      </div>
+
+      <!-- Alternador Modo Administrador / Modo Vista -->
+      <button id="btnToggleMode" class="game-btn game-btn-primary" title="Alternar entre modo construcción y modo vista limpia">
+        👑 Modo Administrador
+      </button>
+
+      <!-- Botón de Sonido Gamificado -->
+      <button id="btnToggleSound" class="game-sound-btn" title="Activar/Desactivar efectos de sonido de colocación">
+        🔊
+      </button>
+
+      <!-- Botón Vaciar Mapa -->
+      <button id="btnClearMap" class="game-btn game-btn-danger" title="Vaciar todos los elementos del mapa">
+        🗑️ Vaciar
+      </button>
+    </div>
+  </header>
+
+  <!-- Game Main Viewport -->
+  <main class="game-viewport">
+    
+    <!-- Vertical Building Dock (Inventory) -->
+    <aside class="game-dock" id="gameDock">
+      
+      <!-- Dock Header: Title & Counter -->
+      <div class="dock-header">
+        <div class="dock-title-row">
+          <div class="dock-title">
+            <span>📦</span> Caja de Construcción
+          </div>
+          <div class="dock-counter">
+            <span id="placedCountBadge">0</span> colocados
+          </div>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="dock-categories" id="dockCategories">
+          <button class="dock-cat-chip active" data-cat="all">🌟 Todos</button>
+          <button class="dock-cat-chip" data-cat="deportes">⚽ Deportes</button>
+          <button class="dock-cat-chip" data-cat="servicios">🏖️ Paradores</button>
+          <button class="dock-cat-chip" data-cat="nautica">⛵ Náutica / Trailers</button>
+          <button class="dock-cat-chip" data-cat="seguridad">🛡️ Seguridad / Bomberos</button>
+          <button class="dock-cat-chip" data-cat="accesos">🪵 Pasarelas y Accesos</button>
+          <button class="dock-cat-chip" data-cat="vialidad">🚦 Tránsito y Velocidad</button>
+          <button class="dock-cat-chip" data-cat="naturaleza">🌿 Dunas y Fauna</button>
+          <button class="dock-cat-chip" data-cat="conciencia">💚 Conciencia</button>
+        </div>
+
+        <!-- Size Preset Selector (S, M, L, XL) -->
+        <div class="dock-size-bar">
+          <span class="dock-size-label">Tamaño del ícono:</span>
+          <div class="size-chips">
+            <button class="size-chip" data-size="36" title="Pequeño (36px)">S</button>
+            <button class="size-chip active" data-size="46" title="Mediano (46px)">M</button>
+            <button class="size-chip" data-size="58" title="Grande (58px)">L</button>
+            <button class="size-chip" data-size="72" title="Extra Grande (72px, ideal para Canchas de Vóley y Fútbol)">XL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dock Search -->
+      <div class="dock-search">
+        <input type="text" id="dockSearchInput" placeholder="🔍 Buscar elemento (ej. volley, fútbol, surf, parador)...">
+      </div>
+
+      <!-- Scrollable Inventory Cards Grid -->
+      <div class="dock-inventory" id="dockInventory">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Placed Elements Drawer -->
+      <div class="dock-placed-section">
+        <div class="dock-placed-header">
+          <span>📍 Elementos en el Mapa (<span id="placedCount">0</span>)</span>
+        </div>
+        <div class="dock-placed-list" id="dockPlacedList">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Map Canvas Area -->
+    <section class="map-canvas-area" id="mapCanvasArea">
+      <div id="map"></div>
+
+      <!-- Balnearios Quick Jump Bar (Bottom Game Ribbon) -->
+      <div class="game-balnearios-bar" id="gameBalneariosBar">
+        <span style="font-family: var(--font-game); font-size: 0.75rem; font-weight: 700; color: #0284c7; white-space: nowrap;">Balnearios:</span>
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notice -->
+  <div class="toast-notice" id="toastNotice">
+    <span id="toastIcon">✨</span>
+    <span id="toastText">¡Elemento colocado en el mapa!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="data/costa_layers.js"></script>
+  <script src="data/marker_catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
