@@ -523,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 14.5 Selector de Tema Visual: siempre enciende por defecto en Estética Simple y Clara
   function initTheme() {
+    localStorage.removeItem('construyamos_costa_theme');
     const defaultTheme = 'clean';
     document.body.setAttribute('data-theme', defaultTheme);
     const selectTheme = document.getElementById('selectTheme');
